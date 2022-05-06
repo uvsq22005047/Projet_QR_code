@@ -1,4 +1,4 @@
-###### Projet QR code
+####### Projet QR code
 
 # Librairies
 import tkinter as tk
