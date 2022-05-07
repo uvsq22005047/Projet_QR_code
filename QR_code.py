@@ -80,6 +80,18 @@ def rotate_gauche(matrice):
     
     return mat_rot
 
+def create_mat_coin():
+    mat_coin = [[0,0,0,0,0,0,0,1]
+                ,[0,1,1,1,1,1,0,1]
+                ,[0,1,0,0,0,1,0,1]
+                ,[0,1,0,0,0,1,0,1]
+                ,[0,1,0,0,0,1,0,1]
+                ,[0,1,1,1,1,1,0,1]
+                ,[0,0,0,0,0,0,0,1]
+                ,[1,1,1,1,1,1,1,1]]
+    
+    return mat_coin
+
 def extraire_matrice(g_mat, p_mat):
     mat =[[0]*nbrLig(p_mat) for i in range(nbrCol(p_mat))]
     for i in range(nbrLig(p_mat)):
@@ -89,8 +101,9 @@ def extraire_matrice(g_mat, p_mat):
 
 def verif_sens_QR_code(mat):
     global coin_nw, coin_ne, coin_se, coin_sw
+    global QR_code_valide
 
-    mat_coin = loading("coin.png")
+    mat_coin = create_mat_coin()
     
     coin_nw, coin_ne, coin_se, coin_sw = False, False, False, False
 
@@ -128,22 +141,26 @@ def verif_sens_QR_code(mat):
     elif coin_nw == False and coin_ne == True and coin_se == True and coin_sw == True:
         mat = rotate_gauche(rotate_gauche(mat))
         
-    if coin_nw == True and coin_ne == True and coin_se == False and coin_sw == True:
+    elif coin_nw == True and coin_ne == True and coin_se == False and coin_sw == True:
         None
+    
     else:
+        QR_code_valide = False
+    
+    
+    if QR_code_valide == True:
         saving(mat,"new.png")
         charger("new.png")
-
+    
 def verif_timing(matrice):
     timing = True
-    mat_coin = loading("coin.png")
+    mat_coin = create_mat_coin()
     pix = 0
-    print(matrice[nbrLig(mat_coin)-2])
 
     for i in range(nbrCol(mat_coin), nbrCol(matrice)-nbrCol(mat_coin)):
         
         if matrice[nbrLig(mat_coin)-2][i] == pix:
-            print(pix)
+
             if pix == 0:
                 pix = 1
             else:
@@ -155,30 +172,102 @@ def verif_timing(matrice):
 
     return timing
     
-        
-            
+def verif_all_timing(matrice):
+    global QR_code_valide
+    timing_top = verif_timing(matrice)
+    timing_left = verif_timing(rotate_droite(matrice))
+    print(timing_top, timing_left)
+    if timing_top == True and timing_left == True:
+        QR_code_valide = True
+    else:
+        QR_code_valide = False
 
+def verif_taille(matrice):
+    global QR_code_valide
+    if nbrLig(matrice) != nbrCol(matrice):
+        QR_code_valide = False
+
+def correction_erreur(message):
+    final_message = None
+    c1 = message[0]+ message[1], message[3]
+    c2 = message[0]+ message[2], message[3]
+    c3 = message[1]+ message[2], message[3]
+    
+    if c1 % 2 == 0:
+        c1 = 0
+    else:
+        c1 = 1
+    
+    if c2 % 2 == 0:
+        c2 = 0
+    else:
+        c2 = 1
+    
+    if c3 % 2 == 0:
+        c3 = 0
+    else:
+        c3 = 1
+
+    if c1 == 0 and c2 == 0 and c3 == 0:
+        final_message = message[:3]
+
+    return final_message
+
+def read(matrice):
+    all_message = []
+    for k in range(0,15,4):
+        print(k)
+
+        message_binaire = []
+        for i in range(7):
+            for j in range(2):
+                message_binaire.append(matrice[(-1)-(j+k)][(-1)-i])
+        all_message.append(message_binaire)
+    
+        message_binaire = []
+        for i in range(7,14):
+            for j in range(2):
+                message_binaire.append(matrice[(-1)-(j+k)][(-1)-i])
+        all_message.append(message_binaire)
+    
+        message_binaire = []
+        for i in range(7):
+            for j in range(2):
+                message_binaire.append(matrice[(-1)-(j+k+2)][(-14)+i])
+        all_message.append(message_binaire)
+
+        message_binaire = []
+        for i in range(7):
+            for j in range(2):
+                message_binaire.append(matrice[(-1)-(j+k+2)][(-7)+i])
+        all_message.append(message_binaire)
+
+    
+    
+    print("message=\n",all_message)
+
+        
 
 def decode():
+    global QR_code_valide
+    QR_code_valide = True    
     if fichier == None:
         None
     else:
         mat = loading(fichier)
-        verif_sens_QR_code(mat)
-        mat = loading(fichier)
-        timing_top = verif_timing(mat)
-        timing_left = verif_timing(rotate_droite(mat))
-        print(timing_top, timing_left)
-        if timing_top == True and timing_left == True:
-            
-
-
-
-
-
+        verif_taille(mat)
+        if QR_code_valide == True:
+            verif_sens_QR_code(mat)
+            if QR_code_valide == True:
+                mat = loading(fichier)
+                verif_all_timing(mat)
+                if QR_code_valide == True:
+                    print(mat)
+                    read(mat)    
         
-        
-        
+        if QR_code_valide == False:
+            print("QR code non valide") 
+
 
 
 # Affichage graphique
