@@ -6,7 +6,6 @@ from tkinter import filedialog
 import PIL as pil
 from PIL import Image
 from PIL import ImageTk 
-import numpy
 
 # Constantes
 
@@ -187,7 +186,7 @@ def verif_taille(matrice):
     if nbrLig(matrice) != nbrCol(matrice):
         QR_code_valide = False
 
-def correction_erreur(message):
+def code_hamming(message):
     final_message = None
     c1 = message[0]+ message[1], message[3]
     c2 = message[0]+ message[2], message[3]
@@ -213,10 +212,14 @@ def correction_erreur(message):
 
     return final_message
 
+def correction_erreur(matrice):
+    final_message = []
+    print(final_message)
+    pass
+
 def read(matrice):
     all_message = []
     for k in range(0,15,4):
-        print(k)
 
         message_binaire = []
         for i in range(7):
@@ -242,11 +245,31 @@ def read(matrice):
                 message_binaire.append(matrice[(-1)-(j+k+2)][(-7)+i])
         all_message.append(message_binaire)
 
-    
-    
     print("message=\n",all_message)
+    return(all_message)
 
-        
+def determine_type_donnee(matrice):
+    if matrice[24][8] == 0:
+        type_donnee = "numérique"
+    else:
+        type_donnee = "brute"
+
+    return type_donnee
+
+def conversionEntier(liste,b):
+    res = 0
+    liste.reverse()
+    for i in range(len(liste)):
+        res += liste[i]*(b**i)
+    return res
+
+def dechiffrage_hexa(matrice):
+    correction_erreur(read(matrice))
+    print("hexa")
+
+def dechiffrage_ASCII(matrice):
+    correction_erreur(read(matrice))
+    print("ASCII")
 
 def decode():
     global QR_code_valide
@@ -262,8 +285,13 @@ def decode():
                 mat = loading(fichier)
                 verif_all_timing(mat)
                 if QR_code_valide == True:
-                    print(mat)
-                    read(mat)    
+                     
+                    if determine_type_donnee(mat) == "numérique":
+                        dechiffrage_hexa(mat)
+                        
+                    else:
+                        dechiffrage_ASCII(mat)
+                        
         
         if QR_code_valide == False:
             print("QR code non valide") 
