@@ -91,6 +91,7 @@ def verif_sens_QR_code(mat):
     global coin_nw, coin_ne, coin_se, coin_sw
 
     mat_coin = loading("coin.png")
+    
     coin_nw, coin_ne, coin_se, coin_sw = False, False, False, False
 
     mat2 = extraire_matrice(mat, mat_coin)
@@ -115,8 +116,48 @@ def verif_sens_QR_code(mat):
         
     if mat2 == mat_coin:
         coin_sw = True
+    
+    mat = rotate_gauche(mat)
 
-    print(coin_nw, coin_ne, coin_se, coin_sw)
+    if coin_nw == True and coin_ne == False and coin_se == True and coin_sw == True:
+        mat = rotate_droite(mat)
+        
+    elif coin_nw == True and coin_ne == True and coin_se == True and coin_sw == False:
+        mat = rotate_gauche(mat)
+
+    elif coin_nw == False and coin_ne == True and coin_se == True and coin_sw == True:
+        mat = rotate_gauche(rotate_gauche(mat))
+        
+    if coin_nw == True and coin_ne == True and coin_se == False and coin_sw == True:
+        None
+    else:
+        saving(mat,"new.png")
+        charger("new.png")
+
+def verif_timing(matrice):
+    timing = True
+    mat_coin = loading("coin.png")
+    pix = 0
+    print(matrice[nbrLig(mat_coin)-2])
+
+    for i in range(nbrCol(mat_coin), nbrCol(matrice)-nbrCol(mat_coin)):
+        
+        if matrice[nbrLig(mat_coin)-2][i] == pix:
+            print(pix)
+            if pix == 0:
+                pix = 1
+            else:
+                pix = 0
+                
+        else:
+            timing = False
+            break
+
+    return timing
+    
+        
+            
+
 
 def decode():
     if fichier == None:
@@ -124,21 +165,15 @@ def decode():
     else:
         mat = loading(fichier)
         verif_sens_QR_code(mat)
+        mat = loading(fichier)
+        timing_top = verif_timing(mat)
+        timing_left = verif_timing(rotate_droite(mat))
+        print(timing_top, timing_left)
+        if timing_top == True and timing_left == True:
+            
 
-        if coin_nw == True and coin_ne == False and coin_se == True and coin_sw == True:
-            mat = rotate_droite(mat)
-        
-        elif coin_nw == True and coin_ne == True and coin_se == True and coin_sw == False:
-            mat = rotate_gauche(mat)
 
-        elif coin_nw == False and coin_ne == True and coin_se == True and coin_sw == True:
-            mat = rotate_gauche(rotate_gauche(mat))
-        
-        if coin_nw == True and coin_ne == True and coin_se == False and coin_sw == True:
-            None
-        else:
-            saving(mat,"new.png")
-            charger("new.png")
+
 
 
         
