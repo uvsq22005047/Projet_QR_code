@@ -58,7 +58,12 @@ def selection_fichier():
     
     filename = filedialog.askopenfile(mode='rb', title='Choose a file')
     charger(filename)
-        
+
+def verif_taille(matrice):
+    global QR_code_valide
+    if nbrLig(matrice) != nbrCol(matrice):
+        QR_code_valide = False
+
 def rotate_droite(matrice):
 
     mat_rot=[[0]*nbrLig(matrice) for i in range(nbrCol(matrice))]
@@ -175,47 +180,10 @@ def verif_all_timing(matrice):
     global QR_code_valide
     timing_top = verif_timing(matrice)
     timing_left = verif_timing(rotate_droite(matrice))
-    print(timing_top, timing_left)
     if timing_top == True and timing_left == True:
         QR_code_valide = True
     else:
         QR_code_valide = False
-
-def verif_taille(matrice):
-    global QR_code_valide
-    if nbrLig(matrice) != nbrCol(matrice):
-        QR_code_valide = False
-
-def code_hamming(message):
-    final_message = None
-    c1 = message[0]+ message[1], message[3]
-    c2 = message[0]+ message[2], message[3]
-    c3 = message[1]+ message[2], message[3]
-    
-    if c1 % 2 == 0:
-        c1 = 0
-    else:
-        c1 = 1
-    
-    if c2 % 2 == 0:
-        c2 = 0
-    else:
-        c2 = 1
-    
-    if c3 % 2 == 0:
-        c3 = 0
-    else:
-        c3 = 1
-
-    if c1 == 0 and c2 == 0 and c3 == 0:
-        final_message = message[:3]
-
-    return final_message
-
-def correction_erreur(matrice):
-    final_message = []
-    print(final_message)
-    pass
 
 def read(matrice):
     all_message = []
@@ -245,8 +213,37 @@ def read(matrice):
                 message_binaire.append(matrice[(-1)-(j+k+2)][(-7)+i])
         all_message.append(message_binaire)
 
-    print("message=\n",all_message)
     return(all_message)
+
+def code_hamming(message):
+    final_message = None
+    """
+    c1 = message[0]+ message[1], message[3]
+    c2 = message[0]+ message[2], message[3]
+    c3 = message[1]+ message[2], message[3]
+    
+    if c1 % 2 == 0:
+        c1 = 0
+    else:
+        c1 = 1
+    
+    if c2 % 2 == 0:
+        c2 = 0
+    else:
+        c2 = 1
+    
+    if c3 % 2 == 0:
+        c3 = 0
+    else:
+        c3 = 1
+
+    if c1 == 0 and c2 == 0 and c3 == 0:
+        final_message = message[:3]
+    else:
+        print("erreur")
+    """
+    final_message = message[:4]
+    return final_message
 
 def determine_type_donnee(matrice):
     if matrice[24][8] == 0:
@@ -263,13 +260,66 @@ def conversionEntier(liste,b):
         res += liste[i]*(b**i)
     return res
 
-def dechiffrage_hexa(matrice):
-    correction_erreur(read(matrice))
+def conversionBase(nombre,b):
+    if(nombre==0):
+        return [0]
+    res = []
+    while nombre > 0:
+        res.append(nombre%b)
+        nombre //= b
+    res.reverse()
+    return res
+
+def afficheBaseHexa(liste):
+    for v in liste:
+        if(v == 10):
+            print('A',end="")
+        elif(v == 11):
+            print('B',end="")
+        elif(v == 10):
+            print('C',end="")
+        elif(v == 11):
+            print('D',end="")
+        elif(v == 10):
+            print('E',end="")
+        elif(v == 11):
+            print('F',end="")
+        else:
+            print(v, end="")
+
+def dechiffrage_hexa(message):
+    final_message = []
+    print(final_message)
+
     print("hexa")
 
-def dechiffrage_ASCII(matrice):
-    correction_erreur(read(matrice))
+def dechiffrage_ASCII(message):
+    message_final = []
+    for i in range(0,nbrLig(message),2):
+        message_final.append(message[i]+ message[i+1])
+    print(message_final)
+    for i in range(nbrLig(message_final)):
+        message_final[i] = chr(conversionEntier(message_final[i],2))
     print("ASCII")
+    print(message_final)
+    return message_final
+
+def dechiffrage_message(matrice,message):
+    final_message = []
+    
+    for i in range(nbrLig(message)):
+        final_message.append(message[i][:7])
+        final_message.append(message[i][7:])
+
+    
+    for i in range(nbrLig(final_message)):
+        final_message[i] = code_hamming(final_message[i])
+    print(final_message)
+    
+    if determine_type_donnee(matrice) == "numérique":
+        dechiffrage_hexa(final_message)                   
+    else:
+        dechiffrage_ASCII(final_message)
 
 def decode():
     global QR_code_valide
@@ -285,12 +335,9 @@ def decode():
                 mat = loading(fichier)
                 verif_all_timing(mat)
                 if QR_code_valide == True:
+                    dechiffrage_message(mat,read(mat))
                      
-                    if determine_type_donnee(mat) == "numérique":
-                        dechiffrage_hexa(mat)
-                        
-                    else:
-                        dechiffrage_ASCII(mat)
+                    
                         
         
         if QR_code_valide == False:
