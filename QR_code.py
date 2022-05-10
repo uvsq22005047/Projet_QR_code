@@ -215,17 +215,19 @@ def read(matrice):
 
     return(all_message)
 
-def swap(bit_a_chg:int):
-    swap = {0: 1, 1:0}
-    swap[bit_a_chg]
+def swap(bit_a_chg):
+    if bit_a_chg == 1:
+        bit_a_chg = 0
+    else:
+        bit_a_chg = 1
     return bit_a_chg        
     
 def code_hamming(message):
     final_message = []
     
-    c1 = message[0]+ message[1], message[3]
-    c2 = message[0]+ message[2], message[3]
-    c3 = message[1]+ message[2], message[3]
+    c1 = (message[0]+ message[1] +message[3])%2
+    c2 = (message[0]+ message[2]+ message[3])%2
+    c3 = (message[1]+ message[2]+message[3])%2
     m1=message[0]
     m2=message[1]
     m3=message[2]
