@@ -1,16 +1,16 @@
 ####### Projet QR code
 
+
 # Librairies
 import tkinter as tk
 from tkinter import filedialog
 import PIL as pil
 from PIL import ImageTk 
 
-# Constantes
-
 
 # Variables globals
 file = None
+
 
 # Fonctions
 
@@ -624,10 +624,6 @@ picture_QR_code.grid(column=0, row=0, columnspan=2)
 message_QR_code.grid(column=0, row=1, columnspan=2)
 button_loading.grid(column=0, row=2)
 button_decode.grid(column=1, row=2)
-
-
-
-
 
 
 main_windows.mainloop()
