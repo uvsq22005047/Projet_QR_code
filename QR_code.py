@@ -367,6 +367,9 @@ def read(matrix):
 
 
 def swap(bit_a_chg):
+    """
+    Fonction qui echange les 0 et les 1
+    """
     if bit_a_chg == 1:
         bit_a_chg = 0
     else:
@@ -374,6 +377,10 @@ def swap(bit_a_chg):
     return bit_a_chg        
     
 def code_hamming(message):
+    """
+    Fonction qui sort 4 bits corriger
+    """
+
     final_message = []
     
     c1 = (message[0]+ message[1] +message[3])%2
