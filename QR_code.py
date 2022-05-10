@@ -4,10 +4,10 @@
 import tkinter as tk
 from tkinter import filedialog
 import PIL as pil
-from PIL import Image
 from PIL import ImageTk 
 
 # Constantes
+
 
 # Variables globals
 file = None
@@ -64,7 +64,7 @@ def open_file(filename):
     img = pil.Image.open(filename)
     photo = ImageTk.PhotoImage(img)  
     picture_QR_code.config(width = img.size[0], height = img.size[1])
-    dessin = picture_QR_code.create_image(2,2,anchor = 'nw', image=photo)
+    picture_QR_code.create_image(2,2, anchor = 'nw', image=photo)
 
 
 def selection_file():
@@ -74,6 +74,7 @@ def selection_file():
     
     filename = filedialog.askopenfile(mode='rb', title='Choose a file')
     open_file(filename)
+    message_QR_code.config(text="")
 
 
 def verification_size(matrix):
@@ -140,6 +141,21 @@ def create_filter(matrix):
                 pixel = 1
     
     return matrix_filter
+
+
+def application_filter(matrix):
+    """
+    Fonction qui applique un filtre sur la matrice.
+    """
+
+    matrix_filter = create_filter(matrix)
+
+    for i in range(nbrLig(matrix)):
+        for j in range(nbrCol(matrix)):
+            matrix[i][j] = matrix[i][j] ^ matrix_filter[i][j]
+    
+    saving(matrix,"new.png")
+    open_file("new.png")
 
 
 def rotate_right(matrix):
@@ -373,7 +389,8 @@ def swap(bit_a_chg):
     else:
         bit_a_chg = 1
     return bit_a_chg        
-    
+
+
 def code_hamming(message):
     """
     Fonction qui sort 4 bits corriger
@@ -408,8 +425,6 @@ def code_hamming(message):
     final_message.append(m3)
     final_message.append(m4)
     return final_message
-
-
 
 
 def determine_data(matrix):
@@ -484,20 +499,11 @@ def translate_hexa(matrix):
     """
     Fonction qui traduit et retourne en hexadécimal les données de la matrice.
     """
-    message = []
+    
     for i in range(nbrLig(matrix)):
         matrix[i] = conversion_integer(matrix[i],2)
 
     matrix = show_base_hexa(matrix)
-    
-    for i in range(0,nbrLig(matrix),2):
-        message.append(matrix[i]+ matrix[i+1])
-
-    for i in range(nbrLig(message)):
-        message[i] = conversion_integer(message[i],16)
-
-    for i in range(nbrLig(message)):
-        print(chr(message[i]))
 
     return matrix
 
@@ -582,32 +588,45 @@ def decode():
                 verif_all_timing(matrix_file)
                 
                 if QR_code_valid == True:
-                    
-                    # On déchiffre le message et on l'affiche dans la fenêtre graphique
+
+                    # On applique un filtre sur le QR code.
+                    application_filter(matrix_file)
+
+                    matrix_file = loading(file)
+
+                    # On déchiffre le message et on l'affiche dans la fenêtre graphique.
                     texte = translate(matrix_file,read(matrix_file))
-                    message_QR_code.config(text=texte)
+                    color_text = "white"
+                    
         
         # Si le QR code n'est pas valide...
         if QR_code_valid == False:
-            print("QR code non valide") 
+            texte = "QR code non valide"
+            color_text = "red"
+
+        message_QR_code.config(text=texte, fg=color_text)
 
 
 
 # Affichage graphique
 main_windows = tk.Tk()
 main_windows.title("Lecteur de QR Code")
+main_windows.config(bg="black")
 
-picture_QR_code = tk.Canvas(main_windows, width=100, height=100, bg="red")
-message_QR_code = tk.Label(main_windows, text="t", bg="black", fg="white")
 
-button_loading = tk.Button(main_windows, text="Charger", command = lambda : selection_file())
-button_decode = tk.Button(main_windows, text="Décoder", command = lambda : decode())
+picture_QR_code = tk.Canvas(main_windows, bg="white")
+message_QR_code = tk.Label(main_windows, text="", bg="black", fg="white")
 
-picture_QR_code.grid(column=1, row=0)
-message_QR_code.grid(column=1, row=1)
+button_loading = tk.Button(main_windows, text="Charger un QR code",bg="white", fg="black", command = lambda : selection_file())
+button_decode = tk.Button(main_windows, text="Décoder le QR code",bg="white", fg="black", command = lambda : decode())
 
-button_loading.grid(column=0, row=0)
-button_decode.grid(column=0, row=1)
+picture_QR_code.grid(column=0, row=0, columnspan=2)
+message_QR_code.grid(column=0, row=1, columnspan=2)
+button_loading.grid(column=0, row=2)
+button_decode.grid(column=1, row=2)
+
+
+
 
 
 
