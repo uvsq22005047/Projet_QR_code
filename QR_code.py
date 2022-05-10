@@ -304,7 +304,7 @@ def code_hamming(liste):
         c3 = 1
 
     if c1 == 0 and c2 == 0 and c3 == 0:
-        final_message = liste[:4]
+        final_liste = liste[:4]
     else:
         print("erreur")
     """
@@ -357,7 +357,10 @@ def conversion_integer(liste,base):
     return integer
 
 
-def afficheBaseHexa(liste):
+def show_base_hexa(liste):
+    """
+    Fonction qui retourne un nombre en base 16.
+    """
     message = []
     for v in liste:
         if(v == 10):
@@ -385,14 +388,14 @@ def translate_hexa(matrix):
     for i in range(nbrLig(matrix)):
         matrix[i] = conversion_integer(matrix[i],2)
 
-    matrix = afficheBaseHexa(matrix)
+    matrix = show_base_hexa(matrix)
     
     for i in range(0,nbrLig(matrix),2):
         message.append(matrix[i]+ matrix[i+1])
 
     for i in range(nbrLig(message)):
         message[i] = conversion_integer(message[i],16)
-        
+
     for i in range(nbrLig(message)):
         print(chr(message[i]))
 
