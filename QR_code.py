@@ -372,9 +372,8 @@ def swap(bit_a_chg):
         bit_a_chg = 0
     else:
         bit_a_chg = 1
-    return bit_a_chg
-
-
+    return bit_a_chg        
+    
 def code_hamming(message):
     """
     Fonction qui sort 4 bits corriger
@@ -409,6 +408,8 @@ def code_hamming(message):
     final_message.append(m3)
     final_message.append(m4)
     return final_message
+
+
 
 
 def determine_data(matrix):
