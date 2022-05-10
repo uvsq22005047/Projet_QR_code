@@ -236,21 +236,21 @@ def code_hamming(message):
   
 
     if c1!=message[4] and c2!=message[5] and c3==message[6]:
-        message[0]=swap(message[0])
+        m1=swap(m1)
 
     if c1==message[4] and c2!=message[5] and c3!=message[6]:
-        message[2]=swap(message[2])
+        m3=swap(m3)
 
     if c1!=message[4] and c2==message[5] and c3!=message[6]:
-        message[1]=swap(message[1])
+        m2=swap(m2)
 
     if c1!=message[4] and c2!=message[5] and c3!=message[6]:
-        message[3]=swap(message[3])
+        m4=swap(m4)
 
-    final_message.append(message[0])
-    final_message.append(message[1])
-    final_message.append(message[2])
-    final_message.append(message[3])
+    final_message.append(m1)
+    final_message.append(m2)
+    final_message.append(m3)
+    final_message.append(m4)
     return final_message
 
 def determine_type_donnee(matrice):
