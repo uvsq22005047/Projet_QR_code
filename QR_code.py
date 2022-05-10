@@ -241,11 +241,26 @@ def verif_all_timing(matrix):
         QR_code_valid = False
 
 
+def number_block_read(matrix):
+    """
+    Fonction qui determine combien de bloc il faut lire dans le QR code"""
+    
+    number_block = []
+    for i in range(13,18):
+        number_block.append(matrix[i][0])
+    
+    number_block = conversion_integer(number_block,2)
+    
+    return number_block
+
+
 def read(matrix):
     """
     Fonction qui lie et retourne le code du message du QR code
     """
     
+    number_block = number_block_read(matrix)
+
     code = []
     
     for k in range(0,15,4):
@@ -257,19 +272,28 @@ def read(matrix):
                 code_block.append(matrix[(-1)-(j+k)][(-1)-i])
         code.append(code_block)
         
+        if 1+k == number_block:
+            break
+
         # Lecture du bloc 2+k
         code_block = []
         for i in range(7,14):
             for j in range(2):
                 code_block.append(matrix[(-1)-(j+k)][(-1)-i])
         code.append(code_block)
-    
+
+        if 2+k == number_block:
+            break
+        
         # Lecture du bloc 3+k
         code_block = []
         for i in range(7):
             for j in range(2):
                 code_block.append(matrix[(-1)-(j+k+2)][(-14)+i])
         code.append(code_block)
+
+        if 3+k == number_block:
+            break
 
         # Lecture du bloc 4+k
         code_block = []
@@ -278,6 +302,9 @@ def read(matrix):
                 code_block.append(matrix[(-1)-(j+k+2)][(-7)+i])
         code.append(code_block)
 
+        if 4+k == number_block:
+            break
+    
     return code
 
 
