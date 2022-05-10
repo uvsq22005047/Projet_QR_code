@@ -86,6 +86,62 @@ def verification_size(matrix):
         QR_code_valid = False
 
 
+def create_filter(matrix):
+    """
+    Fonction qui créés et retourne un filtre selon le type de filtre indiquée par le QR code.
+    """
+
+    code = [matrix[22][8]] + [matrix[23][8]]
+
+    matrix_filter = [[0]*nbrCol(matrix) for i in range(nbrLig(matrix))]
+
+    if code == [0,0]:
+        None
+    
+    # Créé un damier don le pixel tous en haut à gauche est noire.
+    elif code == [0,1]:
+        pixel = 0
+        for i in range(nbrLig(matrix)):
+            for j in range(nbrCol(matrix)):
+                matrix_filter[i][j] = pixel
+                if pixel == 0:
+                    pixel = 1
+                else:
+                    pixel = 0
+            if matrix_filter[i][0] == 0:
+                    pixel = 1
+            else:
+                pixel = 0
+    
+    # Crée une matrice dont les lignes horizontales alternent entre noires et blancs, la plus haute est noire.
+    elif code == [1,0]:
+        pixel = 0
+        for i in range(nbrLig(matrix)):
+            for j in range(nbrCol(matrix)):
+                matrix_filter[i][j] = pixel
+            if pixel == 0:
+                pixel = 1
+            else:
+                pixel = 0
+    
+    # Créé une matrice dont les lignes verticales alternent entre noires et blancs, la plus à gauche est noire.
+    elif code == [1,1]:
+        pixel = 0
+        for i in range(nbrLig(matrix)):
+            for j in range(nbrCol(matrix)):
+                matrix_filter[i][j] = pixel
+                if pixel == 0:
+                    pixel = 1
+                else:
+                    pixel = 0
+            if matrix_filter[i][0] == 0:
+                    pixel = 0
+            else:
+                pixel = 1
+    
+    return matrix_filter
+
+
 def rotate_right(matrix):
     """
     Fonction qui renverse vers la droite la matrice et la retourne.
@@ -153,6 +209,7 @@ def verification_orientation(matrix):
     """
     global QR_code_valid
 
+    #create_filter(matrix)
     matrix_corner = create_matrix_corner()
     
     # Création des variable corespondant aux quatre coins de la matrice.
@@ -497,7 +554,7 @@ def decode():
         verification_size(matrix_file)
         
         if QR_code_valid == True:
-
+            
             # On vérifie qu'il a les trois coins spécifiques des QR codes et si oui, on vérifie ensuite qu'il est dans le bon sens.
             verification_orientation(matrix_file)
             
