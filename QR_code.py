@@ -317,7 +317,6 @@ def read(matrix):
     """
     
     number_block = number_block_read(matrix)
-
     code = []
     
     for k in range(0,15,4):
@@ -365,36 +364,50 @@ def read(matrix):
     return code
 
 
-def swap(bit_a_chg:int):
-    swap = {0: 1, 1:0}
-    swap[bit_a_chg]
+def swap(bit_a_chg):
+    """
+    Fonction qui echange les 0 et les 1
+    """
+    if bit_a_chg == 1:
+        bit_a_chg = 0
+    else:
+        bit_a_chg = 1
     return bit_a_chg
 
 
 def code_hamming(message):
+    """
+    Fonction qui sort 4 bits corriger
+    """
+
     final_message = []
     
-    c1 = message[0]+ message[1], message[3]
-    c2 = message[0]+ message[2], message[3]
-    c3 = message[1]+ message[2], message[3]
+    c1 = (message[0]+ message[1] +message[3])%2
+    c2 = (message[0]+ message[2]+ message[3])%2
+    c3 = (message[1]+ message[2]+message[3])%2
+    m1=message[0]
+    m2=message[1]
+    m3=message[2]
+    m4=message[3]
+    
 
     if c1!=message[4] and c2!=message[5] and c3==message[6]:
-        message[0]=swap(message[0])
+        m1=swap(m1)
 
-    elif c1==message[4] and c2!=message[5] and c3!=message[6]:
-        message[2]=swap(message[2])
 
-    elif c1!=message[4] and c2==message[5] and c3!=message[6]:
-        message[1]=swap(message[1])
+    if c1==message[4] and c2!=message[5] and c3!=message[6]:
+        m3=swap(m3)
 
-    elif c1!=message[4] and c2!=message[5] and c3!=message[6]:
-        message[3]=swap(message[3])
+    if c1!=message[4] and c2==message[5] and c3!=message[6]:
+        m2=swap(m2)
 
-    final_message.append(message[0])
-    final_message.append(message[1])
-    final_message.append(message[2])
-    final_message.append(message[3])
-    
+    if c1!=message[4] and c2!=message[5] and c3!=message[6]:
+        m4=swap(m4)
+
+    final_message.append(m1)
+    final_message.append(m2)
+    final_message.append(m3)
+    final_message.append(m4)
     return final_message
 
 
