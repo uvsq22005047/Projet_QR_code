@@ -332,72 +332,69 @@ def conversion_integer(liste,base):
     """
     
     integer = 0
+    liste_2 = []
+    
+    # Si la liste est en base 16...
     for i in range(len(liste)):
-        integer += liste[-i-1]*(base**i)
+        if liste[i] == "A":
+            liste_2.append(10)
+        elif liste[i] == "B":
+            liste_2.append(11)
+        elif liste[i] == "C":
+            liste_2.append(12)
+        elif liste[i] == "D":
+            liste_2.append(13)
+        elif liste[i] == "E":
+            liste_2.append(14)
+        elif liste[i] == "F":
+            liste_2.append(15)
+        else:
+            liste_2.append(int(liste[i]))
+    
+    for i in range(len(liste_2)):
+        integer += liste_2[-i-1]*(base**i)
+    
     return integer
 
 
-def conversionBase(nombre,b):
-    if(nombre==0):
-        return [0]
-    res = []
-    while nombre > 0:
-        res.append(nombre%b)
-        nombre //= b
-    res.reverse()
-    return res
-""" 
 def afficheBaseHexa(liste):
-    text = ""
+    message = []
     for v in liste:
         if(v == 10):
-            text += "A"
+            message.append("A")
         elif(v == 11):
-            text += "B"
+            message.append("B")
         elif(v == 12):
-            text += "C"
+            message.append("C")
         elif(v == 13):
-            text += "D"
+            message.append("D")
         elif(v == 14):
-            text += "E"
+            message.append("E")
         elif(v == 15):
-            text += "F"
+            message.append("F")
         else:
-            text += str(v)
-    print(text)
-    return text
-"""
-
-def afficheBaseHexa(liste):
-    for v in liste:
-        #compléter le code
-        if(v == 10):
-            print('A',end="")
-        elif(v == 11):
-            print('B',end="")
-        elif(v == 12):
-            print('C',end="")
-        elif(v == 13):
-            print('D',end="")
-        elif(v == 14):
-            print('E',end="")
-        elif(v == 15):
-            print('F',end="")
-        else:
-            print(v, end="")   
-    
+            message.append(str(v))
+    return message
+   
 
 def translate_hexa(matrix):
     """
     Fonction qui traduit et retourne en hexadécimal les données de la matrice.
     """
+    message = []
     for i in range(nbrLig(matrix)):
         matrix[i] = conversion_integer(matrix[i],2)
-    print("tatatatat=\n",matrix)
+
+    matrix = afficheBaseHexa(matrix)
     
-    for i in range(nbrLig(matrix)):
-        matrix[i] = afficheBaseHexa(matrix)
-    #print("tatatatat=\n",message)
+    for i in range(0,nbrLig(matrix),2):
+        message.append(matrix[i]+ matrix[i+1])
+
+    for i in range(nbrLig(message)):
+        message[i] = conversion_integer(message[i],16)
+        
+    for i in range(nbrLig(message)):
+        print(chr(message[i]))
 
     return matrix
 
@@ -445,7 +442,6 @@ def translate(matrix,code_matrix):
     for i in code_2_matrix:
         message += str(i)
 
-    print(message)
     return message
 
 
