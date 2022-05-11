@@ -321,7 +321,7 @@ def number_block_read(matrix):
     number_block = []
     for i in range(13,18):
         number_block.append(matrix[i][0])
-    
+
     number_block = conversion_integer(number_block,2)
     
     return number_block
@@ -331,8 +331,8 @@ def read(matrix):
     """
     Fonction qui lie et retourne le code du message du QR code
     """
+    global number_block
     
-    number_block = number_block_read(matrix)
     code = []
     
     for k in range(0,15,4):
@@ -559,7 +559,7 @@ def decode():
     Fonction qui appelle d'autre fonction nécessaire pour décoder le QR code
      et qui affiche le message obtenue dans la fenetre grapphique.
     """
-    global QR_code_valid
+    global QR_code_valid, number_block
     
     QR_code_valid = True    
     
@@ -588,7 +588,10 @@ def decode():
                 verif_all_timing(matrix_file)
                 
                 if QR_code_valid == True:
-
+                    
+                    # On détermine combien de bloc il faut lire.
+                    number_block = number_block_read(matrix_file)
+                    
                     # On applique un filtre sur le QR code.
                     application_filter(matrix_file)
 
