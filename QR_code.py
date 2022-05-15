@@ -11,8 +11,6 @@ la fonction ne reconnait donc pas ce coin et ne considere pas le fichier comme u
 """
 
 
-
-
 # Librairies
 import tkinter as tk
 from tkinter import filedialog
