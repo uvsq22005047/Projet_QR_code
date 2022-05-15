@@ -1,5 +1,17 @@
 ####### Projet QR code
 
+# Problème non résolu
+
+"""
+Le programme ne permet pas de lire le fichier qr_code_damier_ascii_invalid.png, car 
+la fonction verification_orientation() nous dit que c'est un qr code que si il y a
+les trois coins, or un des pixel noir codant pour le nombre de bloc à lire est à la
+place d'un pixel blanc du coin en bas à gauche du fichier qr_code_damier_ascii_invalid.png,
+la fonction ne reconnait donc pas ce coin et ne considere pas le fichier comme un qr code.
+"""
+
+
+
 
 # Librairies
 import tkinter as tk
@@ -380,15 +392,15 @@ def read(matrix):
     return code
 
 
-def swap(bit_a_chg):
+def swap(value):
     """
     Fonction qui echange les 0 et les 1
     """
-    if bit_a_chg == 1:
-        bit_a_chg = 0
+    if value == 1:
+        value = 0
     else:
-        bit_a_chg = 1
-    return bit_a_chg        
+        value = 1
+    return value        
 
 
 def code_hamming(message):
